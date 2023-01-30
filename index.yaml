@@ -3,6 +3,30 @@ entries:
   annotationlab:
   - apiVersion: v2
     appVersion: 4.6.2
+    created: "2023-01-30T14:19:32.489505625Z"
+    dependencies:
+    - condition: installAirflow
+      name: airflow
+      repository: ""
+      version: 1.0.0
+    - condition: installKeycloak
+      name: keycloak
+      repository: ""
+      version: 9.0.1
+    - condition: installPostgresql
+      name: postgresql
+      repository: ""
+      version: 9.1.1
+    description: JohnSnowLabs NLP Lab
+    digest: 0db4e1613ee3633345ab78b16a37d2fe614865385dd0356fca944b483b217566
+    home: https://www.johnsnowlabs.com
+    name: annotationlab
+    type: application
+    urls:
+    - https://github.com/turath-project/annotationlab-helm/releases/download/annotationlab-5/annotationlab-5.tgz
+    version: "5"
+  - apiVersion: v2
+    appVersion: 4.6.2
     created: "2023-01-30T13:47:08.272594962Z"
     dependencies:
     - condition: installAirflow
