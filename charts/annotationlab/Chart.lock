@@ -1,0 +1,12 @@
+dependencies:
+- name: airflow
+  repository: ""
+  version: 1.0.0
+- name: keycloak
+  repository: ""
+  version: 9.0.1
+- name: postgresql
+  repository: ""
+  version: 9.1.1
+digest: sha256:ef4300da231f4ad17183bfc21136b46055c157b2e751dd83daea0d4882befb09
+generated: "2023-01-30T15:46:19.972248+02:00"
