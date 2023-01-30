@@ -1,11 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-  {{- if semverCompare ">=1.19" $.Capabilities.KubeVersion.Version -}}
 apiVersion: networking.k8s.io/v1
-    {{- else if semverCompare ">=1.14" $.Capabilities.KubeVersion.Version -}}
-apiVersion: networking.k8s.io/v1beta1
-    {{- else -}}
-apiVersion: extensions/v1beta1
-  {{- end }}
 kind: Ingress
 metadata:
   name: {{ include "annotationlab.fullname" . }}
@@ -18,23 +12,15 @@ metadata:
   {{- end }}
 spec:
   {{- if .Values.ingress.defaultBackend }}
-    {{- if semverCompare ">=1.19" $.Capabilities.KubeVersion.Version }}
   defaultBackend:
     service:
       name: {{ include "annotationlab.fullname" $ }}
       port:
         name: {{ $.Values.service.portName }}
-    {{- else }}
-  backend:
-    serviceName: {{ include "annotationlab.fullname" $ }}
-    servicePort: {{ $.Values.service.portName }}
-    {{- end }}
     {{- if and ($.Values.installKeycloak) (not $.Values.keycloak.ingress.enabled) }}
   rules:
     - http:
         paths:
-      {{- if semverCompare ">=1.22" $.Capabilities.KubeVersion.Version }}
-        {{- if semverCompare ">=1.19" $.Capabilities.KubeVersion.Version }}
           - path: /
             pathType: Prefix
             backend:
@@ -42,14 +28,6 @@ spec:
                 name: {{ include "annotationlab.fullname" $ }}
                 port:
                   name: http
-        {{- else }}
-          - path: /
-            backend:
-              serviceName: {{ include "annotationlab.fullname" $ }}
-              servicePort: http
-        {{- end }}
-      {{- end }}          
-      {{- if semverCompare ">=1.19" $.Capabilities.KubeVersion.Version }}
           - path: /auth
             pathType: Prefix
             backend:
@@ -57,13 +35,6 @@ spec:
                 name: {{ include "annotationlab.keycloak.fullname" $ }}-http
                 port:
                   name: http
-      {{- else }}
-          - path: /auth
-            backend:
-              serviceName: {{ include "annotationlab.keycloak.fullname" $ }}-http
-              servicePort: http
-      {{- end }}
-    {{- end }}
   {{- else }}
     {{- if .Values.ingress.tls }}
   tls:
@@ -80,7 +51,6 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-      {{- if semverCompare ">=1.19" $.Capabilities.KubeVersion.Version }}
           - path: {{ .path | quote }}
             pathType: Prefix
             backend:
@@ -88,14 +58,6 @@ spec:
                 name: {{ include "annotationlab.fullname" $ }}
                 port:
                   name: {{ $.Values.service.portName }}
-      {{- else }}
-          - path: {{ .path | quote }}
-            backend:
-              serviceName: {{ include "annotationlab.fullname" $ }}
-              servicePort: {{ $.Values.service.portName }}
-      {{- end }}
-      {{- if and ($.Values.installKeycloak) (not $.Values.keycloak.ingress.enabled) }}
-        {{- if semverCompare ">=1.19" $.Capabilities.KubeVersion.Version }}
           - path: /auth
             pathType: Prefix
             backend:
@@ -103,13 +65,6 @@ spec:
                 name: {{ include "annotationlab.keycloak.fullname" $ }}-http
                 port:
                   name: http
-        {{- else }}
-          - path: /auth
-            backend:
-              serviceName: {{ include "annotationlab.keycloak.fullname" $ }}-http
-              servicePort: http
-        {{- end }}
-      {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}
