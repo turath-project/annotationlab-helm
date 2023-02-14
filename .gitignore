@@ -5,3 +5,4 @@
 charts-repo/
 # helm subcharts
 helm/**/charts
+Chart.lock
