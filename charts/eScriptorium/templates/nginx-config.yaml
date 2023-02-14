@@ -8,7 +8,7 @@ data:
   nginx.conf: |-
 {{- if .Values.app.nginx.config.default }}
     upstream escriptorium {
-        server web:8000;
+        server app:8000;
         # server unix:/usr/src/app/escriptorium/app.sock;
     }
 
