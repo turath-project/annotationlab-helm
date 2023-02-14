@@ -63,6 +63,9 @@ spec:
               value: {{ coalesce $.Values.app.cmdWrapper $.Values.global.cmdWrapper }}
             {{- end }}
           {{- if .Values.app.livenessProbe.enabled }}
+          ports:
+          - containerPort: 8000
+            protocol: TCP
           livenessProbe:
             httpGet:
               path: "{{ if eq .Values.app.contextPath "/" }}{{ .Values.app.livenessProbe.path }}{{ else }}{{ .Values.app.contextPath }}{{ .Values.app.livenessProbe.path }}{{ end }}"

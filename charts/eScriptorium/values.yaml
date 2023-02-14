@@ -107,7 +107,9 @@ app:
   ## @param app.args Override default container args (useful when using custom images)
   ##
   args:
-    - "uwsgi --ini /usr/src/app/uwsgi.ini"
+    - "uwsgi"
+    - "--ini"
+    - "/usr/src/app/uwsgi.ini"
 
   resources:
     requests: {}
