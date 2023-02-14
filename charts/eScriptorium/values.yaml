@@ -134,15 +134,12 @@ app:
 
   nginx:
     image:
-      repository: registry.gitlab.com/scripta/escriptorium/nginx
+      repository: "nginx"
       pullPolicy: IfNotPresent
-      tag: "v0.13.2"
+      tag: "1.23"
     config:
       default: true
       custom: ""
-
-    args:
-      - "nginx"
     resources:
       requests: {}
         ## Example
