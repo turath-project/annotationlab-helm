@@ -29,5 +29,6 @@ postgresql:
 
 redis:
   enabled: false
+  
 ci: true
 

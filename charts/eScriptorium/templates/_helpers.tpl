@@ -253,7 +253,7 @@ Set's common environment variables
             {{- end }}
             {{- if not .Values.global.extraEnvironmentVars.KRAKEN_TRAINING_LOAD_THREADS }}
             - name: KRAKEN_TRAINING_LOAD_THREADS
-              value: 8
+              value: "8"
             {{- end }}
             {{- if not .Values.global.extraEnvironmentVars.DJANGO_SU_NAME }}
             - name: DJANGO_SU_NAME
