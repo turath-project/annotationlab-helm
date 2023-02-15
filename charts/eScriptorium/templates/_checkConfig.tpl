@@ -8,9 +8,9 @@ The messages templated here will be combined into a single `fail` call. This cre
   + If there isn't a group for that check yet, put it at the end of this file
   + If there are more than 1 check of a same group, extract those checks into a new
   file following the above format. Don't forget to extract the tests too.
-- `define` a new template, prefixed `ls.checkConfig.`
+- `define` a new template, prefixed `escriptorium.checkConfig.`
 - Check for known problems in configuration, and directly output messages (see message format below)
-- Add a line to `ls.checkConfig` to include the new template.
+- Add a line to `escriptorium.checkConfig` to include the new template.
 
 Message format:
 
@@ -26,16 +26,16 @@ Compile all warnings into a single message, and call fail.
 
 Due to gotpl scoping, we can't make use of `range`, so we have to add action lines.
 */}}
-{{- define "ls.checkConfig" -}}
+{{- define "escriptorium.checkConfig" -}}
 {{- $messages := list -}}
 {{/* add templates here */}}
 
 {{/* other checks */}}
-{{- $messages = append $messages (include "ls.checkConfig.pgConfig" .) -}}
-{{- $messages = append $messages (include "ls.checkConfig.pGandRedisCIonly" .) -}}
-{{- $messages = append $messages (include "lse.checkConfig.redisHost" .) -}}
-{{- $messages = append $messages (include "lse.checkConfig.redisSslscheme" .) -}}
-{{- $messages = append $messages (include "lse.checkConfig.persistenceEnabled" .) -}}
+{{- $messages = append $messages (include "escriptorium.checkConfig.pgConfig" .) -}}
+{{- $messages = append $messages (include "escriptorium.checkConfig.pGandRedisCIonly" .) -}}
+{{- $messages = append $messages (include "escriptorium.checkConfig.redisHost" .) -}}
+{{- $messages = append $messages (include "escriptorium.checkConfig.redisSslscheme" .) -}}
+{{- $messages = append $messages (include "escriptorium.checkConfig.persistenceEnabled" .) -}}
 
 {{- /* prepare output */}}
 {{- $messages = without $messages "" -}}
@@ -48,7 +48,7 @@ Due to gotpl scoping, we can't make use of `range`, so we have to add action lin
 {{- end -}}
 
 {{/* Ensure that redis host is set */}}
-{{- define "lse.checkConfig.redisHost" -}}
+{{- define "escriptorium.checkConfig.redisHost" -}}
 {{- if not .Values.checkConfig.skipEnvValues }}
 {{- if and (not .Values.redis.enabled) (not .Values.global.redisConfig.host) -}}
 eScriptorium:
@@ -56,10 +56,10 @@ eScriptorium:
 {{- end -}}
 {{- end -}}
 {{- end -}}
-{{/* END ls.checkConfig.redisHost */}}
+{{/* END escriptorium.checkConfig.redisHost */}}
 
 {{/* Ensure that postgresql host is set */}}
-{{- define "ls.checkConfig.pgConfig" -}}
+{{- define "escriptorium.checkConfig.pgConfig" -}}
 {{- if not .Values.checkConfig.skipEnvValues }}
 {{- if (not .Values.postgresql.enabled) -}}
 {{- if (not .Values.global.pgConfig.host) -}}
@@ -81,29 +81,29 @@ eScriptorium:
 {{- end -}}
 {{- end -}}
 {{- end -}}
-{{/* END ls.checkConfig.pgConfig */}}
+{{/* END escriptorium.checkConfig.pgConfig */}}
 
 {{/* Ensure that "rediss" scheme used in connection string */}}
-{{- define "lse.checkConfig.redisSslscheme" -}}
+{{- define "escriptorium.checkConfig.redisSslscheme" -}}
 {{- if and (.Values.global.redisConfig.ssl.redisSslSecretName) (not (hasPrefix "rediss://" .Values.global.redisConfig.host)) -}}
 eScriptorium:
   Redis: In the case if you're using Redis with TLS it's necessary to define the scheme "rediss://" in `.Values.global.redisConfig.host`
 {{- end -}}
 {{- end -}}
-{{/* END ls.checkConfig.redisSslscheme */}}
+{{/* END escriptorium.checkConfig.redisSslscheme */}}
 
 {{/* Ensure persistence was enabled */}}
-{{- define "lse.checkConfig.persistenceEnabled" -}}
+{{- define "escriptorium.checkConfig.persistenceEnabled" -}}
 {{- if (not .Values.global.persistence.enabled) -}}
 eScriptorium:
   Persistence: You haven't specified a persistence configuration. Data export function will not be supported.
   Data will be persisted on the node running this container, but all data will be lost if this node goes away.
 {{- end -}}
 {{- end -}}
-{{/* END ls.checkConfig.persistenceEnabled */}}
+{{/* END escriptorium.checkConfig.persistenceEnabled */}}
 
 {{/* Ensure that PG and Redis are not used in Production */}}
-{{- define "ls.checkConfig.pGandRedisCIonly" -}}
+{{- define "escriptorium.checkConfig.pGandRedisCIonly" -}}
 {{- if (not .Values.ci) -}}
 {{- if or .Values.redis.enabled .Values.postgresql.enabled }}
 eScriptorium:
@@ -111,4 +111,4 @@ eScriptorium:
 {{- end -}}
 {{- end -}}
 {{- end -}}
-{{/* END ls.checkConfig.pGandRedisCIonly */}}
+{{/* END escriptorium.checkConfig.pGandRedisCIonly */}}

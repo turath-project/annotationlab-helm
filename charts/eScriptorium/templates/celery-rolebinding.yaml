@@ -1,0 +1,17 @@
+{{- if .Values.celery.rbac.create }}
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "celery.fullname" . }}-role-binding
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "celery.labels" . | nindent 4 }}
+roleRef:
+  kind: Role
+  name: {{ include "celery.fullname" . }}-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "celery.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+{{- end }}

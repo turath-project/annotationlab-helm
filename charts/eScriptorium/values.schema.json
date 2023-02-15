@@ -8,6 +8,21 @@
         "site_name": {
           "type": "string"
         },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string"
+            },
+            "pullPolicy": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "imagePullSecrets": {
           "type": "array"
         },
@@ -319,21 +334,6 @@
       "properties": {
         "enabled": {
           "type": "boolean"
-        },
-        "image": {
-          "type": "object",
-          "properties": {
-            "repository": {
-              "type": "string"
-            },
-            "pullPolicy": {
-              "type": "string"
-            },
-            "tag": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
         },
         "deploymentStrategy": {
           "type": "object",
@@ -777,7 +777,7 @@
       },
       "additionalProperties": false
     },
-    "rqworker": {
+    "celery": {
       "type": "object",
       "properties": {
         "enabled": {

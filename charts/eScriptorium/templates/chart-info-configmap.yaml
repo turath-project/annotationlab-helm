@@ -5,5 +5,5 @@ metadata:
   labels:
     {{- include "app.labels" . | nindent 4 }}
 data:
-  escriptoriumVersion: "{{ coalesce .Values.app.image.tag .Chart.AppVersion }}"
+  escriptoriumVersion: "{{ coalesce .Values.global.image.tag .Chart.AppVersion }}"
   escriptoriumChartVersion: "{{ .Chart.Version }}"

@@ -4,6 +4,9 @@ Expand the name
 {{- define "app.name" -}}
 {{- default "escriptorium-app" .Values.app.NameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
+{{- define "celery.name" -}}
+{{- default "celery" .Values.celery.NameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
 {{- define "pvc.name" -}}
 {{- "pvc" | trunc 63 | trimSuffix "-" }}
 {{- end }}
@@ -40,6 +43,19 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "celery.fullname" -}}
+{{- if .Values.celery.FullnameOverride }}
+{{- .Values.celery.FullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default "celery" .Values.celery.FullnameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{- define "pvc.fullname" -}}
 {{- $name := "pvc" }}
 {{- if contains $name .Release.Name }}
@@ -61,7 +77,7 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "ls.chart" -}}
+{{- define "escriptorium.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -69,10 +85,10 @@ Create chart name and version as used by the chart label.
 Common labels for app
 */}}
 {{- define "app.labels" -}}
-helm.sh/chart: {{ include "ls.chart" . }}
+helm.sh/chart: {{ include "escriptorium.chart" . }}
 {{ include "app.selectorLabels" . }}
-{{- if or (.Values.app.image.tag) (.Chart.AppVersion) }}
-app.kubernetes.io/version: {{ coalesce .Values.app.image.tag .Chart.AppVersion | quote }}
+{{- if or (.Values.global.image.tag) (.Chart.AppVersion) }}
+app.kubernetes.io/version: {{ coalesce .Values.global.image.tag .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
@@ -89,10 +105,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Common labels for pvc
 */}}
 {{- define "pvc.labels" -}}
-helm.sh/chart: {{ include "ls.chart" . }}
+helm.sh/chart: {{ include "escriptorium.chart" . }}
 {{ include "pvc.selectorLabels" . }}
-{{- if or (.Values.app.image.tag) (.Chart.AppVersion) }}
-app.kubernetes.io/version: {{ coalesce .Values.app.image.tag .Chart.AppVersion | quote }}
+{{- if or (.Values.global.image.tag) (.Chart.AppVersion) }}
+app.kubernetes.io/version: {{ coalesce .Values.global.image.tag .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
@@ -109,10 +125,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Common labels for pvc
 */}}
 {{- define "secrets.labels" -}}
-helm.sh/chart: {{ include "ls.chart" . }}
+helm.sh/chart: {{ include "escriptorium.chart" . }}
 {{ include "secrets.selectorLabels" . }}
-{{- if or (.Values.app.image.tag) (.Chart.AppVersion) }}
-app.kubernetes.io/version: {{ coalesce .Values.app.image.tag .Chart.AppVersion | quote }}
+{{- if or (.Values.global.image.tag) (.Chart.AppVersion) }}
+app.kubernetes.io/version: {{ coalesce .Values.global.image.tag .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
@@ -126,6 +142,26 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Common labels for celery
+*/}}
+{{- define "celery.labels" -}}
+helm.sh/chart: {{ include "escriptorium.chart" . }}
+{{ include "celery.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ coalesce .Values.global.image.tag .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels for celery
+*/}}
+{{- define "celery.selectorLabels" -}}
+app.kubernetes.io/part-of: escriptorium
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
 Create the name of the app service account to use
 */}}
 {{- define "app.serviceAccountName" -}}
@@ -133,6 +169,17 @@ Create the name of the app service account to use
 {{- default (include "app.fullname" .) .Values.app.serviceAccount.name }}
 {{- else }}
 {{- default "ls" .Values.app.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the name of the celery service account to use
+*/}}
+{{- define "celery.serviceAccountName" -}}
+{{- if .Values.celery.serviceAccount.create }}
+{{- default (include "celery.fullname" .) .Values.celery.serviceAccount.name }}
+{{- else }}
+{{- default "celery" .Values.celery.serviceAccount.name }}
 {{- end }}
 {{- end }}
 

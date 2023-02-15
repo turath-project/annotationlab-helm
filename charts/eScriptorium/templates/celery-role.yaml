@@ -1,0 +1,21 @@
+{{- if .Values.celery.rbac.create }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "celery.fullname" . }}-role
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "celery.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - security.openshift.io
+    resourceNames:
+      - nonroot
+    resources:
+      - securitycontextconstraints
+    verbs:
+      - use
+  {{- if .Values.celery.rbac.rules -}}
+    {{- toYaml .Values.celery.rbac.rules | nindent 2 }}
+  {{- end }}
+{{- end }}

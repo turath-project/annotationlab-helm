@@ -3,9 +3,9 @@ Template for handling deprecation messages
 
 The messages templated here will be combined into a single `fail` call. This creates a means for the user to receive all messages at one time, in place a frustrating iterative approach.
 
-- `define` a new template, prefixed `ls.deprecate.`
+- `define` a new template, prefixed `escriptorium.deprecate.`
 - Check for deprecated values / patterns, and directly output messages (see message format below)
-- Add a line to `ls.deprecations` to include the new template.
+- Add a line to `escriptorium.deprecations` to include the new template.
 
 Message format:
 
@@ -21,10 +21,10 @@ Compile all deprecations into a single message, and call fail.
 
 Due to gotpl scoping, we can't make use of `range`, so we have to add action lines.
 */}}
-{{- define "ls.deprecations" -}}
+{{- define "escriptorium.deprecations" -}}
 {{- $deprecated := list -}}
 {{/* add templates here */}}
-{{- $deprecated = append $deprecated (include "ls.deprecate.featureFlagsAsEnvs" .) -}}
+{{- $deprecated = append $deprecated (include "escriptorium.deprecate.featureFlagsAsEnvs" .) -}}
 
 {{- /* prepare output */}}
 {{- $deprecated = without $deprecated "" -}}
