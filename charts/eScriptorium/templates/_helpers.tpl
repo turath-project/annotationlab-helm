@@ -279,7 +279,7 @@ Set's common environment variables
             {{- else }}
             {{- if .Values.redis.enabled }}
             - name: REDIS_HOST
-              value: redis{{ if .Values.redis.tls.enabled }}s{{ end }}://{{ .Release.Name }}-redis-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}/1
+              value: {{ .Release.Name }}-redis-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
             {{- end }}
             {{- end }}
             {{- if .Values.global.redisConfig.port }}
