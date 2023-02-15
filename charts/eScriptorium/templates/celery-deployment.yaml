@@ -99,16 +99,16 @@ spec:
               mountPath: /usr/src/app/media
             - name: static
               mountPath: /usr/src/app/static
-            {{- if .Values.global.pgConfig.ssl.pgSslSecretName }}
+            {{- if $.Values.global.pgConfig.ssl.pgSslSecretName }}
             - name: pg-ssl-certs
               mountPath: /opt/heartex/secrets/pg_certs
             {{- end }}
-            {{- if .Values.global.redisConfig.ssl.redisSslSecretName }}
+            {{- if $.Values.global.redisConfig.ssl.redisSslSecretName }}
             - name: redis-ssl-certs
               mountPath: /opt/heartex/secrets/redis_certs
             {{- end }}
-            {{- if .Values.app.extraVolumeMounts }}
-              {{ toYaml .Values.app.extraVolumeMounts | nindent 12 }}
+            {{- if $.Values.app.extraVolumeMounts }}
+              {{ toYaml $.Values.app.extraVolumeMounts | nindent 12 }}
             {{- end }}
             {{- if $.Values.celery.extraVolumeMounts }}
               {{ toYaml $.Values.celery.extraVolumeMounts | nindent 12 }}
@@ -138,24 +138,15 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: data
+        - name: media
           {{- if and $.Values.global.persistence.enabled (eq $.Values.global.persistence.type "volume") }}
           persistentVolumeClaim:
             claimName: {{ include "pvc.claimName" $ }}
           {{- else }}
           emptyDir: {}
           {{- end }}
-        {{- if and $.Values.global.persistence.enabled (eq $.Values.global.persistence.type "gcs") }}
-        {{- if or $.Values.global.persistence.config.gcs.applicationCredentialsJSON (and $.Values.global.persistence.config.gcs.applicationCredentialsJSONExistingSecret $.Values.global.persistence.config.gcs.applicationCredentialsJSONExistingSecretKey) }}
-        - name: gcs-storage-credentials
-          secret:
-            {{- if and $.Values.global.persistence.config.gcs.applicationCredentialsJSONExistingSecret $.Values.global.persistence.config.gcs.applicationCredentialsJSONExistingSecretKey }}
-            secretName: {{ $.Values.global.persistence.config.gcs.applicationCredentialsJSONExistingSecret }}
-            {{- else }}
-            secretName: {{ include "secrets.fullname" $ }}
-            {{- end }}
-        {{- end }}
-        {{- end }}
+        - name: static
+          emptyDir: {}    
         {{- if $.Values.global.pgConfig.ssl.pgSslSecretName }}
         - name: pg-ssl-certs
           secret:
@@ -168,12 +159,12 @@ spec:
             secretName: {{ $.Values.global.redisConfig.ssl.redisSslSecretName  }}
             defaultMode: 0640
         {{- end }}
+        {{- if $.Values.app.extraVolumes -}}
+          {{- toYaml $.Values.app.extraVolumes | nindent 8 }}
+        {{- end }}
+
         {{- if $.Values.celery.extraVolumes -}}
           {{- toYaml $.Values.celery.extraVolumes | nindent 8 }}
         {{- end }}
-        - name: opt-heartex
-          emptyDir: {}
-        - name: tmp-dir
-          emptyDir: {}
 {{- end }}
 {{- end }}
