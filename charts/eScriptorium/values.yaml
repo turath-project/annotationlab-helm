@@ -282,8 +282,8 @@ app:
     # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
     className: ""
     annotations:
-      nginx.ingress.kubernetes.io/proxy-send-timeout: 3600
-      nginx.ingress.kubernetes.io/proxy-read-timeout: 3600
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     
     ## Examples:
     ## kubernetes.io/tls-acme: "true"
