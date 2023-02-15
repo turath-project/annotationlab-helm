@@ -212,7 +212,7 @@ app:
 
   # Used to define custom readinessProbe settings
   readinessProbe:
-    enabled: false
+    enabled: true
     path: /version
     # When a probe fails, Kubernetes will try failureThreshold times before giving up
     failureThreshold: 2
@@ -342,21 +342,18 @@ celery:
     type: Recreate
 
   queues:
-    high:
-      replicas: 1
-      args: '"high"'
-    low:
-      replicas: 1
-      args: '"low"'
-    default:
+    main:
       replicas: 1
       args: '"default"'
-    critical:
+    live:
       replicas: 1
-      args: '"critical"'
-    all:
+      args: '"live"'
+    low-priority:
       replicas: 1
-      args: '"low", "default", "critical", "high"'
+      args: '"low-priority"'
+    # all:
+    #   replicas: 1
+    #   args: '"low", "default", "critical", "high"'
 
   resources:
     requests: {}
@@ -444,7 +441,7 @@ celery:
   # Definition of the serviceAccount used to run celery for Label Studio Enterprise
   serviceAccount:
     # Specifies whether to create a service account
-    create: true
+    create: false
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""

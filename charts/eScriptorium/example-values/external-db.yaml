@@ -17,6 +17,7 @@ app:
   ingress:
     enabled: true
     host: test.dev.eScriptorium.com
+    
     annotations:
       nginx.ingress.kubernetes.io/proxy-body-size: "200m"
     tls:

@@ -208,7 +208,7 @@ Set's common environment variables
             {{- end }}
             {{- if .Values.app.ingress.enabled }}
             - name: CSRF_TRUSTED_ORIGINS
-              value: http{{ if .Values.app.ingress.tls }}s{{ end }}://{{ .Values.app.ingress.host }}{{ default "" .Values.app.contextPath }}
+              value: http{{ if .Values.app.ingress.tls }}s{{ end }}://{{ .Values.app.ingress.host }}
             {{- else }}
               value: http://localhost:8080
             {{- end }}

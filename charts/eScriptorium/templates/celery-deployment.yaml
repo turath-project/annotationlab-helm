@@ -40,7 +40,7 @@ spec:
       containers:
         - name: celery
           image: "{{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag | default $.Chart.AppVersion }}"
-          args: [ "python3", "/label-studio-enterprise/label_studio_enterprise/manage.py", "celery", {{ $val.args }} ]
+          args: [ "celery", "worker", "-l", "INFO", "-E", "-A", "escriptorium", "-Ofair", "--prefetch-multiplier", "1", "-c", "10", "--max-tasks-per-child=10", "-Q", {{ $val.args }} ]
           imagePullPolicy: {{ $.Values.global.image.pullPolicy }}
           {{- if $.Values.celery.containerSecurityContext.enabled }}
           securityContext: {{- omit $.Values.celery.containerSecurityContext "enabled" | toYaml | nindent 12 }}
@@ -95,30 +95,24 @@ spec:
           resources:
             {{- toYaml $.Values.celery.resources | nindent 12 }}
           volumeMounts:
-            - name: data
-              mountPath: /label-studio/data
-            {{- if and $.Values.global.persistence.enabled (eq $.Values.global.persistence.type "gcs") }}
-              {{- if or $.Values.global.persistence.config.gcs.applicationCredentialsJSON (and $.Values.global.persistence.config.gcs.applicationCredentialsJSONExistingSecret $.Values.global.persistence.config.gcs.applicationCredentialsJSONExistingSecretKey) }}
-            - name: gcs-storage-credentials
-              mountPath: /opt/heartex/secrets/gcs
-              readOnly: true
-              {{- end }}
-            {{- end }}
-            {{- if $.Values.global.pgConfig.ssl.pgSslSecretName }}
+            - name: media
+              mountPath: /usr/src/app/media
+            - name: static
+              mountPath: /usr/src/app/static
+            {{- if .Values.global.pgConfig.ssl.pgSslSecretName }}
             - name: pg-ssl-certs
               mountPath: /opt/heartex/secrets/pg_certs
             {{- end }}
-            {{- if $.Values.global.redisConfig.ssl.redisSslSecretName }}
+            {{- if .Values.global.redisConfig.ssl.redisSslSecretName }}
             - name: redis-ssl-certs
               mountPath: /opt/heartex/secrets/redis_certs
+            {{- end }}
+            {{- if .Values.app.extraVolumeMounts }}
+              {{ toYaml .Values.app.extraVolumeMounts | nindent 12 }}
             {{- end }}
             {{- if $.Values.celery.extraVolumeMounts }}
               {{ toYaml $.Values.celery.extraVolumeMounts | nindent 12 }}
             {{- end }}
-            - mountPath: /opt/heartex/instance-data/etc
-              name: opt-heartex
-            - mountPath: /tmp
-              name: tmp-dir
       {{- with $.Values.celery.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
