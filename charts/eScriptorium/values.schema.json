@@ -435,6 +435,44 @@
           },
           "additionalProperties": false
         },
+        "channelserver": {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "additionalProperties": true
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "integer"
+                },
+                "targetPort": {
+                  "type": "integer"
+                },
+                "portName": {
+                  "type": "string"
+                },
+                "annotations": {
+                  "type": "object",
+                  "additionalProperties": true
+                },
+                "sessionAffinity": {
+                  "type": "string"
+                },
+                "sessionAffinityConfig": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
         "nginx": {
           "type": "object",
           "properties": {
@@ -718,7 +756,15 @@
             },
             "tls": {
               "type": "array"
-            }
+            },
+            "channelserver": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              }
+            } 
           },
           "additionalProperties": false
         },

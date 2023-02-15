@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app-ws.fullname" . }}
+  labels:
+    {{- include "app-ws.labels" . | nindent 4 }}
+  {{- with .Values.app.channelserver.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.app.channelserver.service.type }}
+  ports:
+    - port: {{ .Values.app.channelserver.service.port }}
+      targetPort: {{ .Values.app.channelserver.service.targetPort }}
+      protocol: TCP
+      name: {{ .Values.app.channelserver.service.portName }}
+  selector:
+    {{- include "app-ws.selectorLabels" . | nindent 4 }}
+  sessionAffinity: {{ .Values.app.channelserver.service.sessionAffinity }}
+  {{- if .Values.app.channelserver.service.sessionAffinityConfig }}
+  sessionAffinityConfig:
+    {{- toYaml .Values.app.channelserver.service.sessionAffinityConfig | nindent 4 }}
+  {{- end }}

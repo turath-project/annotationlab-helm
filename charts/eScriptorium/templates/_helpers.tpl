@@ -4,6 +4,9 @@ Expand the name
 {{- define "app.name" -}}
 {{- default "escriptorium-app" .Values.app.NameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
+{{- define "app-ws.name" -}}
+{{- default "escriptorium-ws" .Values.app.NameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
 {{- define "celery.name" -}}
 {{- default "celery" .Values.celery.NameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
@@ -40,6 +43,15 @@ If release name contains chart name it will be used as a full name.
 {{- else }}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
 {{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "app-ws.fullname" -}}
+{{- $name := "escriptorium-ws" }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 
@@ -98,6 +110,26 @@ Selector labels for app
 */}}
 {{- define "app.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "app.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Common labels for app-ws
+*/}}
+{{- define "app-ws.labels" -}}
+helm.sh/chart: {{ include "escriptorium.chart" . }}
+{{ include "app-ws.selectorLabels" . }}
+{{- if or (.Values.global.image.tag) (.Chart.AppVersion) }}
+app.kubernetes.io/version: {{ coalesce .Values.global.image.tag .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels for app-ws
+*/}}
+{{- define "app-ws.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "app-ws.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

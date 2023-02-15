@@ -2,6 +2,8 @@
 {{- $extraPaths := .Values.app.ingress.extraPaths -}}
 {{- $fullName := include "app.fullname" . -}}
 {{- $svcPort := .Values.app.service.port -}}
+{{- $fullNameWs := include "app-ws.fullname" . -}}
+{{- $svcPortWs := .Values.app.channelserver.service.port -}}
 {{- if and .Values.app.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.app.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.app.ingress.annotations "kubernetes.io/ingress.class" .Values.app.ingress.className}}
@@ -57,5 +59,19 @@ spec:
               {{- else }}
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
+              {{- end }}
+          - path: {{ default "/ws" .Values.app.ingress.channelserver.path }}
+            {{- if (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: ImplementationSpecific
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullNameWs }}
+                port:
+                  number: {{ $svcPortWs }}
+              {{- else }}
+              serviceName: {{ $fullNameWs }}
+              servicePort: {{ $svcPortWs }}
               {{- end }}
 {{- end }}

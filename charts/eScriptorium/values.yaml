@@ -132,6 +132,34 @@ app:
         ## memory: 512Mi
         ## cpu: 500m
 
+  channelserver:
+    args:
+      - "daphne"
+      - "--bind 0.0.0.0"
+      - "--port"
+      - "5000"
+      - "-v"
+      - "1"
+      - "escriptorium.asgi:application"
+
+    service:
+      type: ClusterIP
+      port: 5000
+      targetPort: 5000
+      portName: websocket
+      annotations: { }
+      sessionAffinity: "None"
+      sessionAffinityConfig: { }
+
+    livenessProbe:
+      enabled: true
+      path: "/"
+      failureThreshold: 2
+      initialDelaySeconds: 60
+      periodSeconds: 5
+      successThreshold: 1
+      timeoutSeconds: 3
+
   nginx:
     image:
       repository: "nginx"
@@ -253,7 +281,10 @@ app:
     # For Kubernetes >= 1.18 you should specify the ingress-controller using the field ingressClassName
     # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
     className: ""
-    annotations: { }
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-send-timeout: 3600
+      nginx.ingress.kubernetes.io/proxy-read-timeout: 3600
+    
     ## Examples:
     ## kubernetes.io/tls-acme: "true"
     host: ""
@@ -271,6 +302,9 @@ app:
     ##  - secretName: chart-example-tls
     ##    hosts:
     ##      - app.heartex.local
+    channelserver:
+      path: /ws
+
 
   # Definition of the serviceAccount used to run eScriptorium
   serviceAccount:
