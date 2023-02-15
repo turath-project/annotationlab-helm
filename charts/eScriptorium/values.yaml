@@ -441,7 +441,7 @@ celery:
   # Definition of the serviceAccount used to run celery for Label Studio Enterprise
   serviceAccount:
     # Specifies whether to create a service account
-    create: false
+    create: true
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
