@@ -148,6 +148,27 @@ entries:
   escriptorium:
   - apiVersion: v2
     appVersion: v0.13.2
+    created: "2023-02-15T11:21:33.16933237Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.13.2
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: A project providing digital recognition of handwritten documents using machine learning techniques.
+    digest: 1eaa10c8f7bcec979775ba7f0738dd86ec4c3abf8a074623d6aae01481b0f773
+    home: https://gitlab.com/scripta/escriptorium
+    kubeVersion: '>= 1.14.0-0'
+    name: escriptorium
+    type: application
+    urls:
+    - https://github.com/turath-project/helm-charts/releases/download/escriptorium-0.0.9/escriptorium-0.0.9.tgz
+    version: 0.0.9
+  - apiVersion: v2
+    appVersion: v0.13.2
     created: "2023-02-15T11:17:43.792885051Z"
     dependencies:
     - condition: redis.enabled
