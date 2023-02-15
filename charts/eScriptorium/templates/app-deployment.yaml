@@ -142,7 +142,6 @@ spec:
               mountPath: /usr/src/app/media
             - name: static
               mountPath: /usr/src/app/static
-            volumeMounts:
             - name: nginx-config
               mountPath: /etc/nginx/conf.d
             {{- if .Values.app.extraVolumeMounts }}
