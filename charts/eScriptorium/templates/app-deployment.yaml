@@ -116,9 +116,8 @@ spec:
               protocol: TCP
           {{- if .Values.app.nginx.readinessProbe.enabled }}
           readinessProbe:
-            httpGet:
-              path: "{{ if eq .Values.app.contextPath "/" }}{{ .Values.app.readinessProbe.path }}{{ else }}{{ .Values.app.contextPath }}{{ .Values.app.readinessProbe.path }}{{ end }}"
-              port: 8080
+            tcpSocket: 
+              port: 8080          
             failureThreshold: {{ .Values.app.readinessProbe.failureThreshold }}
             initialDelaySeconds: {{ .Values.app.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.app.readinessProbe.periodSeconds }}
@@ -128,7 +127,7 @@ spec:
           {{- if .Values.app.nginx.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
-              path: "{{ .Values.app.nginx.livenessProbe.path }}"
+              path: "{{ if eq .Values.app.contextPath "/" }}{{ .Values.app.livenessProbe.path }}{{ else }}{{ .Values.app.contextPath }}{{ .Values.app.livenessProbe.path }}{{ end }}"
               port: 8080
             failureThreshold: {{ .Values.app.nginx.livenessProbe.failureThreshold }}
             initialDelaySeconds: {{ .Values.app.nginx.livenessProbe.initialDelaySeconds }}
@@ -143,10 +142,9 @@ spec:
               mountPath: /usr/src/app/media
             - name: static
               mountPath: /usr/src/app/static
-            - name: nginx-conf
-              mountPath: /etc/nginx/conf.d/nginx.conf
-              subPath: nginx.conf
-              readOnly: true                        
+            volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
             {{- if .Values.app.extraVolumeMounts }}
               {{ toYaml .Values.app.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -183,9 +181,10 @@ spec:
           emptyDir: {}
           {{- end }}
         - name: static
-          emptyDir: {}     
-        - name: nginx-conf
+          emptyDir: {}    
+        - name: nginx-config
           configMap:
+            defaultMode: 420
             name: {{ include "app.fullname" . }}-nginxconfig
         {{- if .Values.global.pgConfig.ssl.pgSslSecretName }}
         - name: pg-ssl-certs

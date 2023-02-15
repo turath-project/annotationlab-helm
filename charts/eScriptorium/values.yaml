@@ -151,7 +151,7 @@ app:
         ## cpu: 1000m
     livenessProbe:
       enabled: true
-      path: "/nginx_health"
+      path: "/"
       failureThreshold: 2
       initialDelaySeconds: 60
       periodSeconds: 5
@@ -159,7 +159,6 @@ app:
       timeoutSeconds: 3
     readinessProbe:
       enabled: true
-      path: "/version"
       failureThreshold: 2
       initialDelaySeconds: 60
       periodSeconds: 10
