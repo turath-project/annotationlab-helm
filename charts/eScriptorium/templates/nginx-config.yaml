@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "app.labels" . | nindent 4 }}
 data:
-  nginx.conf: |-
+  default.conf: |-
 {{- if .Values.app.nginx.config.default }}
     upstream escriptorium {
         server 127.0.0.1:8000;
