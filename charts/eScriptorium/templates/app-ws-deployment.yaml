@@ -38,7 +38,7 @@ spec:
           {{- if .Values.app.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.app.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
-          args: ['daphne', '--bind', '0.0.0.0', '--port', '5000', '-v', '1', 'escriptorium.asgi:application']
+          args: ['daphne', '--port', '5000', '-v', '1', 'escriptorium.asgi:application']
           env:
             {{- template "app.common.envs" . }}
             {{- if .Values.app.extraEnvironmentVars -}}
