@@ -40,7 +40,7 @@ spec:
       containers:
         - name: celery
           image: "{{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag | default $.Chart.AppVersion }}"
-          args: [ "celery", "worker", "-l", "INFO", "-E", "-A", "escriptorium", "-Ofair", "--prefetch-multiplier", "1", "-c", "10", "--max-tasks-per-child=10", "-Q", {{ $val.args }} ]
+          args: [ "celery", "worker", "-l", "INFO", "-E", "-A", "escriptorium", "-Ofair", "--prefetch-multiplier", "1", "-c", "1", "-Q", {{ $val.args }} ]
           imagePullPolicy: {{ $.Values.global.image.pullPolicy }}
           {{- if $.Values.celery.containerSecurityContext.enabled }}
           securityContext: {{- omit $.Values.celery.containerSecurityContext "enabled" | toYaml | nindent 12 }}
@@ -93,7 +93,11 @@ spec:
             timeoutSeconds: {{ $.Values.celery.livenessProbe.timeoutSeconds }}
           {{- end }}
           resources:
+          {{- if $val.resources }}
+            {{- toYaml $val.resources | nindent 12 }}
+          {{- else }}
             {{- toYaml $.Values.celery.resources | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: media
               mountPath: /usr/src/app/media

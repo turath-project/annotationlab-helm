@@ -380,12 +380,22 @@ celery:
     main:
       replicas: 1
       args: '"default"'
+      resources:
+        requests:
+          cpu: 500m
+          memory: 500Mi
+        limits:
+          memory: 1Gi
+          cpu: "1"
+
     live:
       replicas: 1
       args: '"live"'
+      
     low-priority:
       replicas: 1
       args: '"low-priority"'
+
     # all:
     #   replicas: 1
     #   args: '"low", "default", "critical", "high"'

@@ -317,6 +317,9 @@ Set's common environment variables
             {{- if .Values.global.redisConfig.port }}
             - name: REDIS_PORT
               value: {{ .Values.global.redisConfig.port }}
+            {{- else }}
+            - name: REDIS_PORT
+              value: 6379
             {{- end }}
             {{- if (and .Values.redis.enabled .Values.redis.auth.enabled .Values.redis.auth.password) }}
             - name: REDIS_PASSWORD
