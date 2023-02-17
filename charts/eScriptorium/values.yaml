@@ -58,7 +58,7 @@ global:
         storageClass: ""
         size: 10Gi
         accessModes:
-          - ReadWriteMany
+          - ReadWriteOnce
         annotations: {}
         existingClaim: ""
         resourcePolicy: ""
