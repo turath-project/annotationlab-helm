@@ -113,10 +113,10 @@ app:
 
   resources:
     requests:
-      memory: 8Gi
+      memory: 6Gi
       cpu: 500m
     limits:
-      memory: 6Gi
+      memory: 8Gi
       cpu: "1"
 
   initContainer:
