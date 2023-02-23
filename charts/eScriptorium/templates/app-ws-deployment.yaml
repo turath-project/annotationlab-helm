@@ -1,3 +1,4 @@
+{{- if .Values.app.channelserver.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -146,3 +147,4 @@ spec:
         {{- if .Values.app.extraVolumes -}}
           {{- toYaml .Values.app.extraVolumes | nindent 8 }}
         {{- end }}
+{{- end }}

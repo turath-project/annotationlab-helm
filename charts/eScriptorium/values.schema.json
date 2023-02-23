@@ -438,6 +438,9 @@
         "channelserver": {
           "type": "object",
           "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
             "args": {
               "type": "array",
               "additionalProperties": true

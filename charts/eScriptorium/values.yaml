@@ -125,6 +125,7 @@ app:
       limits: {}
 
   channelserver:
+    enabled: true
     args:
       - "daphne"
       - "--bind"
